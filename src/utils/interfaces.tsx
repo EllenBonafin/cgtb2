@@ -6,7 +6,7 @@ export type vec3 = [number, number, number];
 
 export type vec4 = [number, number, number, number];
 
-export type LetterType = {
+export type ObjectType = {
   center: vec3;
   ZDepth: number;
   OBJCT: OBJCT;

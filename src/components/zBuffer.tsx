@@ -54,17 +54,17 @@ const ZBuffer: FC<Props> = ({
   function fillPolygon(
     vertices: vec3[],
     selected: boolean = false,
-    letter: Object,
+    object: Object,
     indexFace: number
   ) {
     const minY = Math.min(...vertices.map(([_, y]) => y));
     const maxY = Math.max(...vertices.map(([_, y]) => y));
 
     const L = new p5(...light.position)
-      .sub(new p5(...letter.facesCentroid[indexFace]))
+      .sub(new p5(...object.facesCentroid[indexFace]))
       .normalize();
     const S = new p5(...camera.VRP)
-      .sub(new p5(...letter.facesCentroid[indexFace]))
+      .sub(new p5(...object.facesCentroid[indexFace]))
       .normalize();
 
     const H = L.add(S).normalize();
@@ -105,12 +105,12 @@ const ZBuffer: FC<Props> = ({
               zBuffer[x][y] = [200, 0, 0];
             } else {
               isFlatShading
-                ? (zBuffer[x][y] = letter.calculateFlatShading(
+                ? (zBuffer[x][y] = object.calculateFlatShading(
                     light,
                     camera,
                     indexFace
                   ))
-                : (zBuffer[x][y] = letter.calculatePhongShading(
+                : (zBuffer[x][y] = object.calculatePhongShading(
                     light,
 
                     [x, y, z],

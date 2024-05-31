@@ -12,35 +12,35 @@ import { arrayNumberToArrayString } from 'utils/others';
 
 const gapStack = { childrenGap: 5 };
 
-interface ModalLetter {
+interface ModalObject {
   open: boolean;
   handleOpen: () => void;
-  letterID: string;
+  objectID: string;
 }
 
-export const ModalContent: FC<ModalLetter> = ({
+export const ModalContent: FC<ModalObject> = ({
   open,
   handleOpen,
-  letterID,
+  objectID,
 }) => {
-  const { objects, handleChangeLetter } = useObjects();
-  const letter = objects.find((obj) => obj.id === letterID);
+  const { objects, handleChangeObject } = useObjects();
+  const object = objects.find((obj) => obj.id === objectID);
 
-  const [Ka, setKa] = useState(arrayNumberToArrayString(letter?.Ka));
-  const [Kd, setKd] = useState(arrayNumberToArrayString(letter?.Kd));
-  const [Ks, setKs] = useState(arrayNumberToArrayString(letter?.Ks));
-  const [Ns, setNs] = useState(letter?.n.toString() ?? '1');
+  const [Ka, setKa] = useState(arrayNumberToArrayString(object?.Ka));
+  const [Kd, setKd] = useState(arrayNumberToArrayString(object?.Kd));
+  const [Ks, setKs] = useState(arrayNumberToArrayString(object?.Ks));
+  const [Ns, setNs] = useState(object?.n.toString() ?? '1');
 
   const onCreate = () => {
-    if (!letter) return;
+    if (!object) return;
 
-    letter.setIlumination(
+    object.setIlumination(
       [parseFloat(Ka[0]), parseFloat(Ka[1]), parseFloat(Ka[2])], // Ka
       [parseFloat(Kd[0]), parseFloat(Kd[1]), parseFloat(Kd[2])], // Kd
       [parseFloat(Ks[0]), parseFloat(Ks[1]), parseFloat(Ks[2])], // Ks
       parseFloat(Ns)
     );
-    handleChangeLetter(letter);
+    handleChangeObject(object);
     handleOpen();
   };
   return (

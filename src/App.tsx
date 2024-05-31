@@ -14,7 +14,7 @@ function App() {
     maxHeight: '85vh',
     overflowY: 'auto',
   };
-  const [selectedLetter, setSelectedLetter] = useState<string[]>([]);
+  const [selectedObject, setSelectedObject] = useState<string[]>([]);
   const [lastPosition, setLastPosition] = useState([0, 0, 0]);
 
   const { cameras, handleChangeCameras } = useObjects();
@@ -69,8 +69,8 @@ function App() {
       >
         <ZBuffer
           indexCamera={3}
-          selectedLetter={selectedLetter}
-          setSelectedLetter={setSelectedLetter}
+          selectedObject={selectedObject}
+          setSelectedObject={setSelectedObject}
           setLastPosition={setLastPosition}
           lastPosition={lastPosition}
         />

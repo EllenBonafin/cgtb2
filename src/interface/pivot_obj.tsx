@@ -216,7 +216,7 @@ export const PivotObject: FC = ({}) => {
         <ModalContent
           handleOpen={handleOpen}
           open={modalOpen}
-          letterID={selectedObject}
+          objectID={selectedObject}
         />
       ) : null}
     </Stack>
