@@ -55,6 +55,18 @@ export function ObjectsProvider({ children }: Props) {
   //Inicia a câmera
   const [cameras, setCamera] = useState<Camera[]>([
     new Camera(
+      defaultVRP,
+      defaultP,
+      { width: [-600, 600], height: [-600, 600] },
+      { width: [-600, 600], height: [-600, 600] },
+      defaultFar,
+      defaultNear,
+      defaultLookUp,
+      1,
+      'perspective',
+      false
+    ),
+    new Camera(
       undefined,
       undefined,
       { width: [-300, 300], height: [-300, 300] },
@@ -63,7 +75,7 @@ export function ObjectsProvider({ children }: Props) {
       defaultNear,
       undefined,
       undefined,
-      'axonometric-front',
+      'axonometric',
       false
     ),
     new Camera(
@@ -90,18 +102,7 @@ export function ObjectsProvider({ children }: Props) {
       'axonometric-top',
       false
     ),
-    new Camera(
-      defaultVRP,
-      defaultP,
-      { width: [-600, 600], height: [-600, 600] },
-      { width: [-600, 600], height: [-600, 600] },
-      defaultFar,
-      defaultNear,
-      defaultLookUp,
-      1,
-      'perspective',
-      false
-    ),
+
   ]);
 
   //Inicia a luz

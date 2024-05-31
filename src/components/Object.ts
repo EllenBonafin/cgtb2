@@ -1,6 +1,6 @@
 import p5Types from 'p5';
 import { matrixMul, rotate, scale, translate } from 'utils/calculate';
-import OBJ from 'utils/font';
+import OBJ from 'utils/objects';
 import { OBJCT, vec3 } from 'utils/interfaces';
 import { amplifierEdges, getCentroidFaces, getNormal } from 'utils/others';
 import { Camera } from './Camera';

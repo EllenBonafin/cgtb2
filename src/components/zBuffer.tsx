@@ -12,7 +12,6 @@ import { vec3, vec4 } from 'utils/interfaces';
 import { Object } from './Object';
 import { useObjects } from './Provider';
 interface Props {
-  indexCamera: number;
   selectedObject: string[];
   setSelectedObject: Dispatch<SetStateAction<string[]>>;
   lastPosition: number[];
@@ -20,7 +19,6 @@ interface Props {
 }
 
 const ZBuffer: FC<Props> = ({
-  indexCamera,
   selectedObject,
   setSelectedObject,
   lastPosition,
@@ -30,7 +28,7 @@ const ZBuffer: FC<Props> = ({
 
   const canvas = useRef<HTMLCanvasElement>();
 
-  const camera = cameras[indexCamera];
+  const camera = cameras[0];
 
   const width =
     Math.abs(camera.ViewPort.width[0]) + Math.abs(camera.ViewPort.width[1]);
@@ -47,7 +45,7 @@ const ZBuffer: FC<Props> = ({
     [width, height]
   );
 
-  let fillPolygons = indexCamera === 3;
+  let fillPolygons = 1;
 
   const isFlatShading = light.lightType === 0;
   const p5 = p5Types.Vector;

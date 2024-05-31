@@ -68,7 +68,6 @@ function App() {
         }}
       >
         <ZBuffer
-          indexCamera={3}
           selectedObject={selectedObject}
           setSelectedObject={setSelectedObject}
           setLastPosition={setLastPosition}
