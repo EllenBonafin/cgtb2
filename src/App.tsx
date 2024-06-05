@@ -1,3 +1,4 @@
+import './App.css';
 import { Pivot, PivotItem } from '@fluentui/react';
 import { useObjects } from 'components/Provider';
 import ZBuffer from 'components/zBuffer';
@@ -5,7 +6,6 @@ import ZBuffer from 'components/zBuffer';
 import { PivotCamera } from 'interface/pivot_camera';
 import { PivotObject } from 'interface/pivot_obj';
 import { PivotLight } from 'interface/pivot_light';
-import { PivotScene } from 'interface/pivot_scene';
 import { CSSProperties, useEffect, useState } from 'react';
 
 function App() {
@@ -46,17 +46,18 @@ function App() {
   return (
     <div style={{ display: 'flex', height: '135vh' }}>
       <div style={{ width: '45vw', height: '100%', padding: 8 }}>
-        <Pivot>
-          <PivotItem headerText="Cena" style={p} itemKey="0">
-            <PivotScene />
-          </PivotItem>
-          <PivotItem headerText="Objetos" style={p} itemKey="1">
+      <Pivot
+          className="pivotRoot"
+          linkFormat="tabs"
+          linkSize="large"
+        >
+          <PivotItem headerText="Objetos" style={p} itemKey="1" className='btn1'>
             <PivotObject />
           </PivotItem>
-          <PivotItem headerText="Câmera" style={p} itemKey="2">
+          <PivotItem headerText="Câmera" style={p} itemKey="2" className='btn2'>
             <PivotCamera />
           </PivotItem>
-          <PivotItem headerText="Luz" style={p} itemKey="3">
+          <PivotItem headerText="Luz" style={p} itemKey="3" className='btn3'>
             <PivotLight />
           </PivotItem>
         </Pivot>

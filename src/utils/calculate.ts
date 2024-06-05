@@ -31,10 +31,11 @@ export function rotate(
   option: 'X' | 'Y' | 'Z'
 ): vec3[] | vec3 | vec4 {
   let rotO: number[][];
-  //Transforma o angulo
+
+  //Transforma o angulo em graus
   ang = toDegrees(ang);
 
-
+ // Determina a matriz de rotação com base no eixo de rotação
   if (option === 'X') {
     rotO = [
       [1, 0, 0, 0],
@@ -118,6 +119,7 @@ export function transpose(matrix: vec3[]): vec3[] {
   return nj.array(matrix).transpose().tolist() as vec3[];
 }
 
+//transf do angulo
 export function toDegrees(angle: number) {
   return angle * (Math.PI / 180);
 }

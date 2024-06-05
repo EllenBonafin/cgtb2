@@ -12,7 +12,7 @@ export function getNormal(toNormal: number[][]) {
   const v1 = P1.sub(P2);
   const v2 = P3.sub(P2);
   //P3-P2 * P1-P2
-  const value = v1.cross(v2).normalize();
+  const value = v1.cross(v2).normalize(); //vectProduct depois normaliza
   return value;
 }
 
@@ -28,6 +28,7 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 export function getCentroidFaces(face: number[][]): vec3 {
+  //matriz 
   const x = [
     Math.min(...face.map(([x]) => x)),
     Math.max(...face.map(([x]) => x)),
@@ -41,7 +42,8 @@ export function getCentroidFaces(face: number[][]): vec3 {
     Math.max(...face.map(([, , z]) => z)),
   ];
 
-  const xCenter = (x[0] + x[1]) / 2;
+  //ponto medio de cada coordenada 
+  const xCenter = (x[0] + x[1]) / 2; 
   const yCenter = (y[0] + y[1]) / 2;
   const zCenter = (z[0] + z[1]) / 2;
   return [xCenter, yCenter, zCenter] as vec3;

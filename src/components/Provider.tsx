@@ -50,7 +50,7 @@ const defaultPositionLight: vec3 = [300, 0, 0];
 
 export function ObjectsProvider({ children }: Props) {
   //Inicia uma esfera
-  const [objects, setObjects] = useState<Object[]>([new Object([1, 0, 0], 20,  'CUBO')]);
+  const [objects, setObjects] = useState<Object[]>([new Object([1, 0, 0], 20,  'CUBO'), new Object([20, 0, 0], 20,  'TRI')]);
 
   //Inicia a câmera
   const [cameras, setCamera] = useState<Camera[]>([
@@ -63,7 +63,7 @@ export function ObjectsProvider({ children }: Props) {
       defaultNear,
       defaultLookUp,
       1,
-      'perspective',
+      'perspectiva',
       false
     ),
     new Camera(
@@ -75,7 +75,7 @@ export function ObjectsProvider({ children }: Props) {
       defaultNear,
       undefined,
       undefined,
-      'axonometric',
+      'paralela',
       false
     ),
     new Camera(
@@ -87,7 +87,7 @@ export function ObjectsProvider({ children }: Props) {
       defaultNear,
       undefined,
       undefined,
-      'axonometric-side',
+      'paralela',
       false
     ),
     new Camera(
@@ -99,7 +99,7 @@ export function ObjectsProvider({ children }: Props) {
       defaultNear,
       undefined,
       undefined,
-      'axonometric-top',
+      'paralela',
       false
     ),
 

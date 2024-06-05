@@ -4,13 +4,9 @@ import { Port, vec3 } from 'utils/interfaces';
 import p5Types from 'p5';
 const p5 = p5Types.Vector;
 
-//OBS: Alguns valores precisam ser atualizados após a alteração de outro valor
 type CameraType =
-  | 'perspective'
-  | 'axonometric-top'
-  | 'axonometric-front'
-  | 'axonometric-side'
-  | 'axonometric';
+  | 'perspectiva'
+  | 'paralela';
 export class Camera {
   //"Posição da câmera"
   public VRP: vec3;
@@ -72,25 +68,25 @@ export class Camera {
     near: number,
     lookAp?: vec3,
     planCenterDistance: number = 1,
-    typeCamera: CameraType = 'perspective',
+    typeCamera: CameraType = 'perspectiva',
     ocultFaces: boolean = true
   ) {
     this.typeCamera = typeCamera;
 
     if (
-      this.typeCamera === 'perspective' ||
-      this.typeCamera === 'axonometric-front'
+      this.typeCamera === 'perspectiva' ||
+      this.typeCamera === 'paralela'
     ) {
       this.VRP = position;
     } else {
-      if (this.typeCamera === 'axonometric-top') {
+      if (this.typeCamera === 'paralela') {
         this.VRP = [0, 100, 0];
         this.viewUp = [0, 0, 1];
       } else this.VRP = [100, 0, 0];
     }
     this.P = target;
 
-    if (this.typeCamera !== 'axonometric-top')
+    if (this.typeCamera !== 'paralela')
       this.viewUp = lookAp ?? this.viewUp;
 
     this.setPlanDistance(planCenterDistance);
@@ -133,9 +129,9 @@ export class Camera {
     this.getAllValues();
   }
 
-  public setCameraType(perspective: boolean) {
-    if (perspective) this.typeCamera = 'perspective';
-    else this.typeCamera = 'axonometric';
+  public setCameraType(perspectiva: boolean) {
+    if (perspectiva) this.typeCamera = 'perspectiva';
+    else this.typeCamera = 'paralela';
     this.getAllValues();
   }
 
@@ -270,7 +266,7 @@ export class Camera {
   //Calcula a matriz de projeção
   getProjectionMatrix(): number[][] {
     //Caso seja perspectiva
-    if (this.typeCamera === 'perspective') {
+    if (this.typeCamera === 'perspectiva') {
       const { VRP, projectionPlan } = this;
 
       const VRPVector = new p5(...VRP);
@@ -286,7 +282,7 @@ export class Camera {
         [0, 0, -1 / Dp, 0],
       ];
       return matrixP;
-      //Se for axonometrica, retorna a matriz identidade
+      //Se for paralelaa, retorna a matriz identidade
     } else {
       const matrixP = [
         [1, 0, 0, 0],
@@ -307,23 +303,6 @@ export class Camera {
     const [uMin, uMax] = ViewPort.width;
     const [vMin, vMax] = ViewPort.height;
 
-    // const matrix = [
-    //   [
-    //     (uMax - uMin) / (xMax - xMin),
-    //     0,
-    //     0,
-    //     -xMin * ((uMax - uMin) / (xMax - xMin)) + uMin,
-    //   ],
-    //   [
-    //     0,
-    //     (vMax - vMin) / (yMax - yMin),
-    //     0,
-    //     -yMin * ((vMax - vMin) / (yMax - yMin)) + vMin,
-    //   ],
-    //   [0, 0, 1, 0],
-    //   [0, 0, 0, 1],
-    // ];
-    //A outra matriz de view fica ao contrário no P5
     const matrix = [
       [
         (uMax - uMin) / (xMax - xMin),

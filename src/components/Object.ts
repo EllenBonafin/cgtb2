@@ -25,7 +25,7 @@ export class Object {
   Ka: vec3; //Fator de Reflexão Ambiente
   Kd: vec3; //Fator de Reflexão Difusa
   Ks: vec3; //Fator de Reflexão Especular
-  n: number; //Shininess ("brilho")
+  n: number; //BRILHO
 
   constructor(
     center: vec3,
@@ -58,46 +58,58 @@ export class Object {
   }
 
   private findFaces() {
+    // Calcula o valor de Z, metade da profundidade do objeto
     const Z = this.ZDepth / 2;
+    // Define o deslocamento como o centro do objeto
     const displacement = this.center;
-
+  
+    // Obtém os bordos do objeto
     const edges = OBJ[this.OBJCT] as vec3[][];
-
+  
+    // Arrays para armazenar as faces nos planos Z e -Z, e as conexões entre eles
     const facesZ: vec3[] = [];
     const facesConnections: vec3[][] = [];
     const facesZDepth: vec3[] = [];
+  
+    // Itera sobre cada bordo do objeto
     for (let edge of edges) {
       const length = edge.length;
+      // Calcula o primeiro ponto da face no plano Z
       const firstPoint = amplifierEdges([
         edge[0][0] + displacement[0],
         edge[0][1] + displacement[1],
         Z,
       ]);
-
+  
+      // Adiciona o primeiro ponto à lista de faces no plano Z
       facesZ.push([firstPoint[0], firstPoint[1], Z + displacement[2]]);
-
+  
+      // Itera reversamente sobre os pontos do bordo para calcular as faces no plano Z
       for (let j = length - 1; j >= 0; j--) {
         const [x, y] = amplifierEdges([
           edge[j][0] + displacement[0],
           edge[j][1] + displacement[1],
           Z,
         ]);
-
+        // Adiciona os pontos à lista de faces no plano Z
         facesZ.push([x, y, Z + displacement[2]]);
       }
-
+  
+      // Itera sobre os pontos do bordo para calcular as faces no plano -Z
       for (let j = 0; j < length; j++) {
         const [x, y] = amplifierEdges([
           edge[j][0] + displacement[0],
           edge[j][1] + displacement[1],
           -Z,
         ]);
-
+        // Adiciona os pontos à lista de faces no plano -Z
         facesZDepth.push([x, y, -Z + displacement[2]]);
       }
+      // Adiciona o primeiro ponto novamente à lista de faces no plano -Z
       facesZDepth.push([firstPoint[0], firstPoint[1], -Z + displacement[2]]);
     }
-
+  
+    // Itera sobre os furos do objeto
     for (let hole of edges) {
       for (let j = 0; j < hole.length; j++) {
         const [x, y] = amplifierEdges([
@@ -111,7 +123,8 @@ export class Object {
           hole[index][1] + displacement[1],
           Z,
         ]);
-
+  
+        // Verifica a ordem dos pontos e adiciona as conexões entre eles
         if (x <= xNextFace) {
           facesConnections.push([
             [x, y, -Z + displacement[2]],
@@ -131,11 +144,13 @@ export class Object {
         }
       }
     }
+  
+    // Atualiza as faces do objeto com as faces calculadas e calcula as normais e centroides
     this.faces = [facesZ, facesZDepth, ...facesConnections];
-
     this.calculateFacesNormal();
     this.findFacesCentroid();
   }
+  
 
   calculateFacesNormal() {
     const facesNormal: vec3[] = [];
@@ -181,64 +196,23 @@ export class Object {
     return dot > 0.00000000001;
   }
 
-  draw(
-    p5: p5Types,
-    camera: Camera,
-
-    isSelect?: boolean
-  ) {
-    for (let i = 0; i < this.faces.length; i++) {
-      const face = this.faces[i];
-
-      if (!this.isFaceVisible(camera, i)) continue;
-
-      p5.stroke(isSelect ? 'red' : 'white');
-      p5.beginShape();
-
-      let firstPoint = face[0];
-      let index = 0;
-      for (let j = 1; j < face.length; j++) {
-        const vertex = face[j];
-
-        const [x, y, z] = matrixMul(
-          [vertex[0], vertex[1], vertex[2]],
-          camera.concatedMatrix
-        ) as any;
-        p5.vertex(x, y, z);
-        if (
-          vertex[0] === firstPoint[0] &&
-          vertex[1] === firstPoint[1] &&
-          vertex[2] === firstPoint[2] &&
-          j !== index
-        ) {
-          p5.endShape(p5.CLOSE);
-          p5.beginShape();
-          firstPoint = face[j + 1];
-          index = j + 1;
-
-          j += 2;
-        }
-      }
-      p5.endShape(p5.CLOSE);
-    }
-  }
   public calculateFlatShading(light: Light, camera: Camera, indexFace: number) {
     const p5 = p5Types.Vector;
     const centroid = new p5(...this.facesCentroid[indexFace]);
     const N = new p5(...this.facesNormal[indexFace]);
 
-    const Ia = new p5(...light.ambientLightIntensity).mult(new p5(...this.Ka));
+    const Ia = new p5(...light.ambientLightIntensity).mult(new p5(...this.Ka)); // Ia = La* Ka
 
-    const L = new p5(...light.position).sub(centroid).normalize();
-    const dotNL = N.dot(L);
+    const L = new p5(...light.position).sub(centroid).normalize(); // l = L - cent
+    const dotNL = N.dot(L); // produto escalar N e L 
     if (dotNL < 0) return Ia.array();
 
     const Id = new p5(...light.lightIntensity)
       .mult(new p5(...this.Kd))
       .mult(dotNL);
 
-    const S = new p5(...camera.VRP).sub(centroid).normalize();
-    const R = N.mult(2 * dotNL)
+    const S = new p5(...camera.VRP).sub(centroid).normalize(); // s = vrp - cent -> ||
+    const R = N.mult(2 * dotNL) //R=L−2(N⋅L)N
       .sub(L)
       .normalize();
     const dotRS = R.dot(S);
@@ -263,7 +237,6 @@ export class Object {
 
   public calculatePhongShading(
     light: Light,
-
     vertex: vec3,
     H: p5Types.Vector,
     L: p5Types.Vector
@@ -272,23 +245,25 @@ export class Object {
     const vertexPoint = new p5(vertex[0], vertex[1], vertex[2]);
     const N = vertexPoint.normalize();
 
-    const Ia = new p5(...light.ambientLightIntensity).mult(new p5(...this.Ka));
+    //Iluminação Ambiente
+    const Ia = new p5(...light.ambientLightIntensity).mult(new p5(...this.Ka)); //intensidade*coeficiente de refelxao Ambiente
 
     const dotNL = N.dot(L);
     if (dotNL < 0) return Ia.array();
 
     const Id = new p5(...light.lightIntensity)
-      .mult(new p5(...this.Kd))
-      .mult(dotNL);
+      .mult(new p5(...this.Kd)) //instisade * cofRefelxaoDifusa
+      .mult(dotNL); //produto escalar NXL
 
     const dotNH = N.dot(H);
     if (dotNH < 0) return Ia.add(Id).array();
 
+    //Iluminação Especular
     const Is = new p5(...light.lightIntensity)
-      .mult(new p5(...this.Ks))
+      .mult(new p5(...this.Ks)) //instisade * cofRefelxaoEspecular
       .mult(Math.pow(dotNH, this.n));
 
-    return Ia.add(Id).add(Is).array();
+    return Ia.add(Id).add(Is).array(); //Iluminacao Total
   }
 
   //Rotaciona a objeto

@@ -40,8 +40,8 @@ export const PivotCamera: FC = () => {
 
   const [ocultFaces, setOcultFaces] = useState(camera.ocultFaces);
 
-  const [perspective, setPerspective] = useState(
-    camera.typeCamera === 'perspective'
+  const [perspectiva, setPerspective] = useState(
+    camera.typeCamera === 'perspectiva'
   );
 
   const [xVRP, setXVRP] = useState(camera.VRP[0].toString());
@@ -123,7 +123,7 @@ export const PivotCamera: FC = () => {
       />
       <Checkbox
         label="Perspectiva"
-        checked={perspective}
+        checked={perspectiva}
         onChange={(_, c) => {
           setPerspective(c!);
           camera.setCameraType(c!);
